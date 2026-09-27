@@ -13,15 +13,6 @@ canvas {
     display: block;
 }
 
-#audio-file {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 10;
-
-    color: white;
-}
-
 .settings-menu {
     p{
         width: 100%;
