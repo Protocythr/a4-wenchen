@@ -21,14 +21,19 @@ canvas {
 
     color: white;
 }
-label{
-    color: white;
-    text-align: center;
-    align-content: center;
-}
 
 .settings-menu {
+    p{
+        width: 100%;
+        color: white;
+    }
     position: absolute;
     display: flex;
     flex-direction: column;
+    label{
+        color: white;
+        text-align: center;
+        align-content: center;
+    }
+    width: 200px;
 }

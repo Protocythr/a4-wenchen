@@ -1,7 +1,6 @@
 import * as THREE from "/node_modules/three/build/three.module.js";
 
 import { AudioManager } from './audio.js';
-//import { Visualizer } from './visualizer.js';
 
 let width = window.innerWidth;
 let height = window.innerHeight;
@@ -32,9 +31,9 @@ window.onresize = (e) => {
 };
 
 const uniforms = {
-    time:  { value: 0.0 },
-    bass:  { value: 0.0 },
-    mids:  { value: 0.0 },
+    time: { value: 0.0 },
+    bass: { value: 0.0 },
+    mids: { value: 0.0 },
     highs: { value: 0.0 },
 };
 
@@ -136,7 +135,10 @@ const mat3 = new THREE.ShaderMaterial({
     wireframe: true,
 });
 
+
+// creating a sphere and not using the base sphere because I do not like the connection at the top and it messes with sine
 const geo = new THREE.IcosahedronGeometry(1, 64);
+// creating a mesh and using different shades that change the topology of the sphere
 const mesh1 = new THREE.Mesh(geo, mat1);
 const mesh2 = new THREE.Mesh(geo, mat2);
 const mesh3 = new THREE.Mesh(geo, mat3);
@@ -144,15 +146,19 @@ const mesh3 = new THREE.Mesh(geo, mat3);
 mesh1.scale.setScalar(1.9);
 mesh2.scale.setScalar(2.0);
 mesh3.scale.setScalar(2.1);
+// adding all of the spheres to the display
 displayScene.add(mesh1);
 displayScene.add(mesh2);
 displayScene.add(mesh3);
 
+// instantiating renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(width, height);
+// adding the canvas to the document body
 document.body.appendChild(renderer.domElement);
 
 function animate() {
+    // spinning the spheres in different directions cause it looks cool
     mesh3.rotation.y += -0.005;
     mesh3.rotation.x += 0.005;
     mesh3.rotation.z += 0.005;
@@ -163,6 +169,7 @@ function animate() {
     mesh1.rotation.x += 0.005;
     mesh1.rotation.z += -0.005;
 
+    //
     const bands = audioManager.getAllBands();
 
     uniforms.bass.value  = bands.bass;
@@ -180,9 +187,9 @@ function animate() {
 
 animate();
 
-document.addEventListener('click',      audioManager.resumePlaying);
-document.addEventListener('keydown',    audioManager.resumePlaying);
-document.addEventListener('touchstart', audioManager.resumePlaying);
+document.addEventListener('click',audioManager.resumePlaying);
+document.addEventListener('keydown',audioManager.resumePlaying);
+document.addEventListener('touchstart',audioManager.resumePlaying);
 // preventing default to catch the file
 window.addEventListener('dragover', (e) => {
     e.preventDefault();

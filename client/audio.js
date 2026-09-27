@@ -4,15 +4,20 @@ import * as THREE from "/node_modules/three/build/three.module.js";
 export class AudioManager {
 
     constructor(camera) {
+        // adding audio  to the camera
         this.listener = new THREE.AudioListener();
         camera.add(this.listener);
 
+        // to get rid of browsers not allowing autoplay so the user has to click first
         this.resumePlaying = this.resumeAudio.bind(this);
 
+        // adding a listeber to the audio so I can grab teh audio and check it out
         this.sound = new THREE.Audio(this.listener);
         this.audioLoader = new THREE.AudioLoader();
         const self = this;
 
+
+        // default audio is one of my friends recs which is from arknights
         self.audioLoader.load('./audio/test.mp3', (buffer) => {
             self.sound.setBuffer(buffer);
             self.sound.setLoop(true);
@@ -22,15 +27,10 @@ export class AudioManager {
             // Create analyser AFTER the buffer is loaded because stuff is cooked otherwise
             self.analyser = new THREE.AudioAnalyser(self.sound, 128);
         });
-
-        // Default Smoothing state can change later through user gui
-        self.smoothB  = 0;
-        self.smoothM  = 0;
-        self.smoothH = 0;
-        self.smoothing   = 0.15;
     }
 
     load(file) {
+        // creating a temp url to store mp3
         const myUrl = URL.createObjectURL(file);
         this.audioLoader.load( myUrl, ( buffer ) => {
             if (this.sound.isPlaying) {
@@ -38,9 +38,11 @@ export class AudioManager {
                 this.sound.setBuffer(null);   // optional but clean
             }
 
+            // sound settings which is to have a buffer that store music ahead of time and looping feature that the user cannot change cause lazy
             this.sound.setBuffer( buffer );
             this.sound.setLoop(true);
             this.sound.setVolume(0.5);
+            // there is no play button so have it on autoplay
             this.sound.play();
 
             this.analyser = new THREE.AudioAnalyser(this.sound, 128);
@@ -62,52 +64,19 @@ export class AudioManager {
 
     getAllBands() {
         if (!this.analyser) {
-            return { bass: 0, mids: 0, highs: 0 };
+            return { bass: 0,mids: 0,highs: 0 };
         }
 
+        // had a Nan issue with highs and had to implement this
         const data = this.analyser.getFrequencyData();
         if (!data || !data.length) {
-            return { bass: 0, mids: 0, highs: 0 };
+            return { bass: 0,mids: 0,highs: 0 };
         }
 
         return {
-            bass:  this.averageAudioSnippetRange(data, 0,    4) / 255,
-            mids:  this.averageAudioSnippetRange(data, 4,   32) / 255,
-            highs: this.averageAudioSnippetRange(data, 32, 128) / 255,
-        };
-    }
-
-    getSmoothedBands() {
-        const raw = this.getAllBands();
-
-        let bass;
-        let mids;
-        let highs;
-
-        if (Number.isFinite(raw.bass)){
-            bass = raw.bass;
-        }else{
-            bass = 0;
-        }
-        if (Number.isFinite(raw.mids)){
-            mids = raw.mids;
-        }else{
-            mids = 0;
-        }
-        if (Number.isFinite(raw.highs)){
-            highs = raw.highs;
-        }else{
-            highs = 0;
-        }
-
-        this.smoothB  += (bass  - this.smoothB)  * this.smoothing;
-        this.smoothM  += (mids  - this.smoothM)  * this.smoothing;
-        this.smoothH += (highs - this.smoothH) * this.smoothing;
-
-        return {
-            bass:  this.smoothB,
-            mids:  this.smoothM,
-            highs: this.smoothH,
+            bass:this.averageAudioSnippetRange(data,0,16) / 255,
+            mids:this.averageAudioSnippetRange(data,16,32) / 255,
+            highs:this.averageAudioSnippetRange(data,32,128) / 255,
         };
     }
 
@@ -116,8 +85,8 @@ export class AudioManager {
         if (ctx.state === 'suspended') {
             ctx.resume().then(() => console.log('AudioContext resumed'));
         }
-        document.removeEventListener('click',      this.resumePlaying);
-        document.removeEventListener('keydown',    this.resumePlaying);
+        document.removeEventListener('click', this.resumePlaying);
+        document.removeEventListener('keydown', this.resumePlaying);
         document.removeEventListener('touchstart', this.resumePlaying);
     }
 
