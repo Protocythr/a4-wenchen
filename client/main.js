@@ -37,6 +37,8 @@ const uniforms = {
     highs: { value: 0.0 },
 };
 
+// the vertex shader is to change the height and depth of vertexs and the fragmentshader originally was supposed to change the
+// color and have cool animations but ran out of time and now they are unused
 const mat1 = new THREE.ShaderMaterial({
     uniforms,
     vertexShader: `
@@ -194,16 +196,17 @@ document.addEventListener('touchstart',audioManager.resumePlaying);
 window.addEventListener('dragover', (e) => {
     e.preventDefault();
 });
+// grabbing the file the user drops
 window.addEventListener('drop', (e) => {
     e.preventDefault();
 
-    const files = e.dataTransfer.files;
-    if (files.length === 0) return;
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length === 0) return;
 
-    const file = files[0];
+    const actualMusicFileMaybeIfNotDumb = droppedFiles[0];
 
-    // Hand off to your audio manager or whatever
-    audioManager.load(file);
+    // Handing off to my music manager
+    audioManager.load(actualMusicFileMaybeIfNotDumb);
 });
 
 window.onload = function () {
