@@ -1,6 +1,3 @@
-Sample Readme (delete the above when you're ready to submit, and modify the below so with your links and descriptions)
----
-
 ## Audio Visualizer
 
 your hosting link e.g. https://a4-wenchen.onrender.com/
