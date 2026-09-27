@@ -81,6 +81,7 @@ export class AudioManager {
     }
 
     resumeAudio() {
+        // literally just plays the audio and allows for user interaction because cannot autoplay due to browser restriction
         const ctx = this.listener.context;
         if (ctx.state === 'suspended') {
             ctx.resume().then(() => console.log('AudioContext resumed'));
